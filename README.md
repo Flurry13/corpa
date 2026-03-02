@@ -35,6 +35,15 @@ txtstat readability essay.txt
 # Shannon entropy analysis
 txtstat entropy corpus.txt
 
+# N-gram language model perplexity
+txtstat perplexity corpus.txt --smoothing laplace
+
+# Detect language
+txtstat lang mystery.txt
+
+# BPE token counts for LLM cost estimation
+txtstat tokens corpus.txt --model gpt4
+
 # Zipf's law rank-frequency distribution
 txtstat zipf corpus.txt --plot
 
@@ -102,20 +111,26 @@ Options:
 - `--stopwords <file|english>` — Exclude stopwords
 
 ### `txtstat tokens`
-Count tokens using various tokenization schemes.
+Count tokens using various tokenization schemes, including BPE token counts for LLM cost estimation.
 
 ```
-$ txtstat tokens chapter.txt
+$ txtstat tokens prose.txt --model all
 
-  txtstat · chapter.txt
-┌────────────┬────────┐
-│ Tokenizer  ┆ Tokens │
-╞════════════╪════════╡
-│ Whitespace ┆    175 │
-│ Sentences  ┆      6 │
-│ Characters ┆    805 │
-└────────────┴────────┘
+  txtstat · prose.txt
+┌──────────────┬────────┐
+│ Tokenizer    ┆ Tokens │
+╞══════════════╪════════╡
+│ Whitespace   ┆    126 │
+│ Sentences    ┆      6 │
+│ Characters   ┆    805 │
+│ BPE (GPT-4)  ┆    150 │
+│ BPE (GPT-4o) ┆    148 │
+│ BPE (GPT-3)  ┆    151 │
+└──────────────┴────────┘
 ```
+
+Options:
+- `--model <name>` — BPE tokenizer: `gpt4`, `gpt4o`, `gpt3`, `all` (omit for whitespace only)
 
 ### `txtstat readability`
 Readability and complexity metrics.
@@ -176,6 +191,49 @@ Options:
 - `--top <K>` — Show top K ranked words (default: 20)
 - `--plot` — Show sparkline plot instead of rank table
 
+### `txtstat perplexity`
+N-gram language model perplexity with configurable smoothing.
+
+```
+$ txtstat perplexity prose.txt --smoothing laplace
+
+  txtstat · prose.txt
+┌─────────────────┬─────────────┐
+│ Metric          ┆       Value │
+╞═════════════════╪═════════════╡
+│ Order           ┆           3 │
+│ Vocabulary Size ┆          95 │
+│ Unigrams        ┆          95 │
+│ Bigrams         ┆         125 │
+│ Trigrams        ┆         124 │
+│ Smoothing       ┆ Add-k (k=1) │
+│ Perplexity      ┆     48.1674 │
+└─────────────────┴─────────────┘
+```
+
+Options:
+- `-n, --order <N>` — N-gram order (default: 3)
+- `--smoothing <method>` — `none`, `laplace`, `backoff` (default: laplace)
+- `--k <K>` — Smoothing parameter for add-k (default: 1.0)
+
+### `txtstat lang`
+Language and script detection with confidence scoring.
+
+```
+$ txtstat lang prose.txt
+
+  txtstat · prose.txt
+┌────────────┬─────────┐
+│ Metric     ┆   Value │
+╞════════════╪═════════╡
+│ Language   ┆ English │
+│ Code       ┆     eng │
+│ Script     ┆   Latin │
+│ Confidence ┆  1.0000 │
+│ Reliable   ┆     Yes │
+└────────────┴─────────┘
+```
+
 ---
 
 ## Global Options
@@ -234,10 +292,10 @@ Benchmarks on a 1GB English text corpus (Apple M2, 8 cores):
 - [x] Parallel processing with `rayon`
 
 ### v0.3.0 — Language Models
-- [ ] `perplexity` command with n-gram LM training
-- [ ] Smoothing methods (Laplace, Stupid Backoff)
-- [ ] `lang` command for language detection
-- [ ] BPE token counting (GPT-3/GPT-4/GPT-4o tokenizers)
+- [x] `perplexity` command with n-gram LM training
+- [x] Smoothing methods (Laplace, Stupid Backoff)
+- [x] `lang` command for language detection
+- [x] BPE token counting (GPT-3/GPT-4/GPT-4o tokenizers)
 
 ### v0.4.0 — Ecosystem
 - [ ] Python bindings via PyO3
@@ -284,6 +342,8 @@ Built on the shoulders of giants:
 - [clap](https://github.com/clap-rs/clap) — CLI argument parsing
 - [comfy-table](https://github.com/nuber-io/comfy-table) — Beautiful terminal tables
 - [unicode-segmentation](https://github.com/unicode-rs/unicode-segmentation) — Unicode text segmentation
+- [whatlang](https://github.com/grstreten/whatlang-rs) — Language detection
+- [tiktoken-rs](https://github.com/zurawiki/tiktoken-rs) — BPE tokenization for GPT models
 
 ---
 
