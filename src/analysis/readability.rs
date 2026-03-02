@@ -1,4 +1,7 @@
 use crate::analysis::tokenizer;
+#[cfg(feature = "rayon")]
+use rayon::prelude::*;
+use rustc_hash::FxHashMap;
 
 /// Precomputed text metrics for readability formulas.
 pub struct TextMetrics {
@@ -14,18 +17,35 @@ pub fn compute_metrics(text: &str) -> TextMetrics {
     let words = tokenizer::words(text);
     let sentence_count = tokenizer::sentence_count(text);
 
-    let mut syllable_total = 0;
-    let mut char_total = 0;
-    let mut complex_count = 0;
-
-    for word in &words {
-        let syls = tokenizer::syllable_count(word);
-        syllable_total += syls;
-        char_total += word.chars().filter(|c| c.is_alphabetic()).count();
-        if syls >= 3 {
-            complex_count += 1;
-        }
+    // Build syllable cache: compute once per unique word type
+    let mut syllable_cache: FxHashMap<&str, usize> = FxHashMap::default();
+    for &word in &words {
+        syllable_cache
+            .entry(word)
+            .or_insert_with(|| tokenizer::syllable_count(word));
     }
+
+    #[cfg(feature = "rayon")]
+    let (syllable_total, char_total, complex_count) = if words.len() > 100_000 {
+        words
+            .par_iter()
+            .map(|word| {
+                let syls = syllable_cache[word];
+                let chars = word.chars().filter(|c| c.is_alphabetic()).count();
+                let complex = if syls >= 3 { 1usize } else { 0 };
+                (syls, chars, complex)
+            })
+            .reduce(
+                || (0, 0, 0),
+                |a, b| (a.0 + b.0, a.1 + b.1, a.2 + b.2),
+            )
+    } else {
+        compute_word_metrics_sequential(&words, &syllable_cache)
+    };
+
+    #[cfg(not(feature = "rayon"))]
+    let (syllable_total, char_total, complex_count) =
+        compute_word_metrics_sequential(&words, &syllable_cache);
 
     TextMetrics {
         word_count: words.len(),
@@ -34,6 +54,24 @@ pub fn compute_metrics(text: &str) -> TextMetrics {
         char_count: char_total,
         complex_word_count: complex_count,
     }
+}
+
+fn compute_word_metrics_sequential(
+    words: &[&str],
+    syllable_cache: &FxHashMap<&str, usize>,
+) -> (usize, usize, usize) {
+    let mut syllable_total = 0;
+    let mut char_total = 0;
+    let mut complex_count = 0;
+    for &word in words {
+        let syls = syllable_cache[word];
+        syllable_total += syls;
+        char_total += word.chars().filter(|c| c.is_alphabetic()).count();
+        if syls >= 3 {
+            complex_count += 1;
+        }
+    }
+    (syllable_total, char_total, complex_count)
 }
 
 /// Flesch-Kincaid Grade Level.

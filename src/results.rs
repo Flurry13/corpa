@@ -111,8 +111,7 @@ pub fn compute_stats(text: &str, stopwords: Option<&FxHashSet<String>>) -> Stats
         &words
     };
 
-    let text_for_freq = effective_words.join(" ");
-    let freqs = counter::word_frequencies(&text_for_freq);
+    let freqs = counter::word_frequencies_from_slice(effective_words);
     let sentences = tokenizer::sentence_count(text);
     let tokens = counter::token_count(&freqs);
     let types = counter::type_count(&freqs);

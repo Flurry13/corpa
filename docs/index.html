@@ -775,40 +775,40 @@
           <span class="section-number">04</span>
           <h2>Performance</h2>
         </div>
-        <p class="perf-context reveal">Benchmarks on a 1 GB English text corpus (Apple M2, 8 cores).</p>
+        <p class="perf-context reveal">Benchmarks on a 1 GB English text corpus (Apple M-series, 8 cores).</p>
         <div class="perf-table-wrap reveal">
           <table class="perf-table">
             <thead>
               <tr>
                 <th>Task</th>
                 <th>corpa</th>
-                <th>Python / NLTK</th>
+                <th>Python</th>
                 <th style="text-align:right">Speedup</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="perf-task">Word count</td>
-                <td class="perf-fast">0.8 s</td>
-                <td class="perf-slow">34 s</td>
-                <td class="perf-speedup">42x</td>
+                <td class="perf-fast">1.9 s</td>
+                <td class="perf-slow">11.5 s</td>
+                <td class="perf-speedup">6x</td>
               </tr>
               <tr>
                 <td class="perf-task">Bigram frequency</td>
-                <td class="perf-fast">1.2 s</td>
-                <td class="perf-slow">89 s</td>
-                <td class="perf-speedup">74x</td>
+                <td class="perf-fast">3.4 s</td>
+                <td class="perf-slow">53.9 s</td>
+                <td class="perf-speedup">16x</td>
               </tr>
               <tr>
                 <td class="perf-task">Readability</td>
-                <td class="perf-fast">0.9 s</td>
-                <td class="perf-slow">41 s</td>
-                <td class="perf-speedup">45x</td>
+                <td class="perf-fast">5.4 s</td>
+                <td class="perf-slow">107.9 s</td>
+                <td class="perf-speedup">20x</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <p class="perf-note reveal">Benchmarks are targets and will be validated with formal benchmarking infrastructure.</p>
+        <p class="perf-note reveal">Benchmarked against equivalent pure Python implementations.</p>
       </div>
     </section>
 
@@ -844,9 +844,8 @@
             <div class="install-card-label">JavaScript</div>
             <h3>npm / WASM</h3>
             <p>Rust compiled to WebAssembly for browser and Node.js environments.</p>
-            <div class="install-cmd" data-copy="npm install @flurry13/corpa" title="Click to copy">
-              <code>npm install @flurry13/corpa</code>
-              <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <div class="install-cmd" style="cursor: default; opacity: 0.7;">
+              <code>Coming soon</code>
             </div>
           </div>
         </div>

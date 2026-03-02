@@ -46,9 +46,7 @@ pip install corpa
 
 ### JavaScript / WASM
 
-```bash
-npm install @flurry13/corpa
-```
+> npm support coming soon.
 
 ---
 
@@ -88,18 +86,7 @@ All functions accept a file path as the first argument or a `text=` keyword argu
 
 ### JavaScript / WASM
 
-```javascript
-import { stats, lang, entropy } from '@flurry13/corpa';
-
-const result = stats("The quick brown fox jumps over the lazy dog.");
-// { tokens: 9, types: 8, sentences: 1, type_token_ratio: 0.8889, ... }
-
-const detected = lang("Bonjour le monde");
-// { language: 'Français', code: 'fra', script: 'Latin', confidence: 0.99 }
-```
-
-All functions accept text strings directly and return plain JavaScript objects.
-
+> support coming soon.
 ---
 
 ## Commands
@@ -201,13 +188,13 @@ Supported commands: `stats`, `ngrams`, `entropy`.
 
 Benchmarks on a 1GB English text corpus (Apple M2, 8 cores):
 
-| Command | corpa | Python (NLTK) | Speedup |
-|---------|---------|---------------|---------|
-| Word count | 0.8s | 34s | **42x** |
-| Bigram frequency | 1.2s | 89s | **74x** |
-| Readability | 0.9s | 41s | **45x** |
+| Command | corpa | Python | Speedup |
+|---------|---------|--------|---------|
+| Word count | 1.9s | 11.5s | **6x** |
+| Bigram frequency | 3.4s | 53.9s | **16x** |
+| Readability | 5.4s | 107.9s | **20x** |
 
-> Benchmarks are targets and will be validated with formal benchmarking infrastructure.
+> Benchmarked on ~1 GB generated English text corpus (Apple M-series, 8 cores).
 
 ---
 
