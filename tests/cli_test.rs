@@ -372,3 +372,23 @@ fn test_tokens_backward_compatible() {
         .collect();
     assert!(!tokenizers.iter().any(|t| t.contains("BPE")), "no BPE rows without --model");
 }
+
+// --- v0.4.0 integration tests ---
+
+#[test]
+fn test_completions_bash() {
+    let out = txtstat(&["completions", "bash"]);
+    assert!(out.contains("txtstat"), "bash completions should reference txtstat");
+}
+
+#[test]
+fn test_completions_zsh() {
+    let out = txtstat(&["completions", "zsh"]);
+    assert!(out.contains("txtstat"));
+}
+
+#[test]
+fn test_completions_fish() {
+    let out = txtstat(&["completions", "fish"]);
+    assert!(out.contains("txtstat"));
+}

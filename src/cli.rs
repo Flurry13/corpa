@@ -150,6 +150,14 @@ pub enum Commands {
         #[arg(long)]
         recursive: bool,
     },
+
+    /// Generate shell completions
+    #[command(hide = true)]
+    Completions {
+        /// Shell to generate completions for
+        #[arg(value_enum)]
+        shell: clap_complete::Shell,
+    },
 }
 
 #[derive(Clone, ValueEnum)]

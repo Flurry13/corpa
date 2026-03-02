@@ -6,7 +6,7 @@ mod output;
 mod utils;
 
 use anyhow::Result;
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 use cli::Cli;
 use rustc_hash::FxHashSet;
 use std::path::Path;
@@ -117,6 +117,10 @@ fn main() -> Result<()> {
                 let table = commands::zipf::run(text.as_str()?, &name, *top, *plot)?;
                 print!("{}", table.render(&cli.format)?);
             }
+        }
+        cli::Commands::Completions { shell } => {
+            let mut cmd = cli::Cli::command();
+            clap_complete::generate(*shell, &mut cmd, "txtstat", &mut std::io::stdout());
         }
     }
 
